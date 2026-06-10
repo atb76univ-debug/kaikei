@@ -175,6 +175,61 @@ function getReceptionTotal() {
     );
 }
 
+function getDiscountCounts(receptions) {
+
+  const counts = {
+    500: 0,
+    1000: 0
+  };
+
+  receptions.forEach(
+    reception => {
+
+      (reception.guests || [])
+        .forEach(
+          guest => {
+
+            if (
+              guest.discount === 500 ||
+              guest.discount === 1000
+            ) {
+              counts[guest.discount]++;
+            }
+          }
+        );
+    }
+  );
+
+  return counts;
+}
+
+function renderDiscountCounts(counts) {
+
+  if (
+    counts[500] === 0 &&
+    counts[1000] === 0
+  ) {
+    return `
+      <div class="sub-text">
+        割引なし
+      </div>
+    `;
+  }
+
+  return `
+    <div class="discount-counts">
+      <div>
+        <span>¥500OFF</span>
+        <strong>${counts[500]}人</strong>
+      </div>
+      <div>
+        <span>¥1,000OFF</span>
+        <strong>${counts[1000]}人</strong>
+      </div>
+    </div>
+  `;
+}
+
 function renderCashBreakdown(breakdown) {
 
   const hasBreakdown =
@@ -449,6 +504,11 @@ function renderHome() {
   const last =
     getLastReception();
 
+  const totalDiscountCounts =
+    getDiscountCounts(
+      state.receptionHistory
+    );
+
   screen.innerHTML = `
   
   <div class="card">
@@ -509,12 +569,14 @@ function renderHome() {
 
     </div>
 
-    <button
-      class="btn btn-secondary"
-      id="editDrinkTicketsBtn"
-    >
-      ドリチケ枚数を編集
-    </button>
+    <div class="discount-count-block">
+      <div class="section-label">
+        割引入場人数
+      </div>
+      ${renderDiscountCounts(
+        totalDiscountCounts
+      )}
+    </div>
 
   </div>
 
@@ -538,25 +600,38 @@ function renderHome() {
         <div>
           TMP ${last.tmp}名
         </div>
+
+        <div class="discount-count-block">
+          <div class="section-label">
+            割引入場人数
+          </div>
+          ${renderDiscountCounts(
+            getDiscountCounts([last])
+          )}
+        </div>
       `
         : "まだ受付履歴はありません"
     }
 
   </div>
 
-  <div class="card">
+  <div class="card drink-ticket-card">
 
-    <div class="row">
-
-      <div>
-        ドリチケ残数
-      </div>
-
-      <div>
-        ${state.drinkTickets}
-      </div>
-
+    <div class="card-title">
+      ドリチケ残数
     </div>
+
+    <div class="ticket-count">
+      ${state.drinkTickets}
+      <span>枚</span>
+    </div>
+
+    <button
+      class="btn btn-secondary"
+      id="editDrinkTicketsBtn"
+    >
+      ドリチケ枚数を編集
+    </button>
 
   </div>
 
@@ -1391,53 +1466,41 @@ function renderSuccessScreen() {
 
   screen.innerHTML = `
 
-  <div
-    class="
-    success-screen
-    "
-  >
+  <div class="success-screen">
 
-    <div
-      class="
-      success-icon
-      "
-    >
-
+    <div class="success-icon">
       ✓
-
     </div>
 
-    <div
-      class="
-      success-text
-      "
-    >
-
+    <div class="success-text">
       受付完了
-
     </div>
 
-    <br>
-
-    <div>
-
-      ${latest.timestamp}
-
+    <div class="success-subtext">
+      3秒後にホームへ戻ります
     </div>
 
-    <br>
+    <div class="success-summary">
 
-    <div>
+      <div>
+        <span>受付時刻</span>
+        <strong>${latest.timestamp}</strong>
+      </div>
 
-      一般
-      ${latest.general}名
+      <div>
+        <span>一般</span>
+        <strong>${latest.general}名</strong>
+      </div>
 
-    </div>
+      <div>
+        <span>TMP</span>
+        <strong>${latest.tmp}名</strong>
+      </div>
 
-    <div>
-
-      TMP
-      ${latest.tmp}名
+      <div>
+        <span>徴収額</span>
+        <strong>¥${formatMoney(latest.totalAmount)}</strong>
+      </div>
 
     </div>
 
@@ -1504,6 +1567,9 @@ function renderHistory() {
     .forEach(
       entry => {
 
+        const discountCounts =
+          getDiscountCounts([entry]);
+
         html += `
 
         <div
@@ -1548,6 +1614,15 @@ function renderHistory() {
               entry.totalAmount
             )}
 
+          </div>
+
+          <div class="discount-count-block">
+            <div class="section-label">
+              割引入場人数
+            </div>
+            ${renderDiscountCounts(
+              discountCounts
+            )}
           </div>
 
           <br>
@@ -1699,6 +1774,11 @@ function renderResult() {
         0
       );
 
+  const discountCounts =
+    getDiscountCounts(
+      state.receptionHistory
+    );
+
   const entranceIncome =
 
     grossEntrance -
@@ -1817,6 +1897,15 @@ function renderResult() {
 
       </strong>
 
+    </div>
+
+    <div class="discount-count-block">
+      <div class="section-label">
+        割引入場人数
+      </div>
+      ${renderDiscountCounts(
+        discountCounts
+      )}
     </div>
 
     <div class="row">

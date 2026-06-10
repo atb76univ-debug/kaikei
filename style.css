@@ -110,6 +110,47 @@ color:var(--sub);
 font-size:14px;
 }
 
+.section-label{
+font-size:13px;
+font-weight:800;
+color:var(--sub);
+margin-bottom:8px;
+}
+
+.discount-count-block{
+margin-top:16px;
+}
+
+.discount-counts{
+display:grid;
+grid-template-columns:
+repeat(2,1fr);
+gap:8px;
+}
+
+.discount-counts div{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:8px;
+
+padding:10px 12px;
+
+background:#fafafa;
+border:1px solid var(--border);
+border-radius:12px;
+}
+
+.discount-counts span{
+font-size:13px;
+font-weight:800;
+color:var(--sub);
+}
+
+.discount-counts strong{
+font-size:16px;
+}
+
 .stats{
 display:grid;
 grid-template-columns:
@@ -323,6 +364,33 @@ font-weight:900;
 text-align:center;
 }
 
+.drink-ticket-card{
+text-align:center;
+}
+
+.drink-ticket-card .card-title{
+text-align:left;
+}
+
+.ticket-count{
+display:flex;
+justify-content:center;
+align-items:baseline;
+gap:6px;
+
+margin:8px 0 18px;
+
+font-size:56px;
+font-weight:900;
+line-height:1;
+}
+
+.ticket-count span{
+font-size:18px;
+font-weight:800;
+color:var(--sub);
+}
+
 .money-display{
 padding:18px;
 margin-bottom:16px;
@@ -447,6 +515,77 @@ width:22px;
 height:22px;
 flex:0 0 auto;
 accent-color:var(--primary);
+}
+
+.success-screen{
+max-width:520px;
+margin:32px auto;
+padding:28px 20px;
+
+background:white;
+border-radius:18px;
+box-shadow:var(--shadow);
+
+text-align:center;
+}
+
+.success-icon{
+width:72px;
+height:72px;
+margin:0 auto 16px;
+
+display:grid;
+place-items:center;
+
+background:var(--success);
+color:white;
+border-radius:50%;
+
+font-size:40px;
+font-weight:900;
+}
+
+.success-text{
+font-size:28px;
+font-weight:900;
+margin-bottom:6px;
+}
+
+.success-subtext{
+font-size:14px;
+font-weight:700;
+color:var(--sub);
+margin-bottom:20px;
+}
+
+.success-summary{
+display:grid;
+gap:10px;
+
+padding:16px;
+
+background:#fafafa;
+border:1px solid var(--border);
+border-radius:14px;
+
+text-align:left;
+}
+
+.success-summary div{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:12px;
+}
+
+.success-summary span{
+font-size:13px;
+color:var(--sub);
+}
+
+.success-summary strong{
+font-size:15px;
+text-align:right;
 }
 
 .history-item{
