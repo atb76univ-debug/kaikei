@@ -571,7 +571,7 @@ function renderHome() {
 
     <div class="discount-count-block">
       <div class="section-label">
-        割引入場人数
+        うち割引入場人数
       </div>
       ${renderDiscountCounts(
         totalDiscountCounts
@@ -603,7 +603,7 @@ function renderHome() {
 
         <div class="discount-count-block">
           <div class="section-label">
-            割引入場人数
+            うち割引入場人数
           </div>
           ${renderDiscountCounts(
             getDiscountCounts([last])
@@ -1591,7 +1591,7 @@ function renderSuccessScreen() {
       </div>
 
       <div>
-        <span>徴収額</span>
+        <span>支払い金額</span>
         <strong>¥${formatMoney(latest.totalAmount)}</strong>
       </div>
 
@@ -1711,7 +1711,7 @@ function renderHistory() {
 
           <div class="discount-count-block">
             <div class="section-label">
-              割引入場人数
+              うち割引入場人数
             </div>
             ${renderDiscountCounts(
               discountCounts
@@ -2023,7 +2023,7 @@ function renderResult() {
     </div>
     <div class="discount-count-block">
       <div class="section-label">
-        割引入場人数
+        うち割引入場人数
       </div>
       ${renderDiscountCounts(
         discountCounts
@@ -2052,7 +2052,7 @@ function renderResult() {
   ${allTmpGuests.length > 0 ? `
     <div class="discount-count-block">
       <div class="section-label">
-        受付したTMPメンバー（${allTmpGuests.length}名）
+        受付済TMPメンバー（${allTmpGuests.length}名）
       </div>
 
       <div style="
