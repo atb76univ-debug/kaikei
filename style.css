@@ -117,6 +117,20 @@ repeat(2,1fr);
 gap:12px;
 }
 
+.stats-grid{
+display:grid;
+grid-template-columns:
+repeat(3,1fr);
+gap:12px;
+}
+
+.stat{
+background:#fafafa;
+padding:16px;
+border-radius:14px;
+text-align:center;
+}
+
 .stat-card{
 background:#fafafa;
 padding:16px;
@@ -231,6 +245,10 @@ border:
 
 }
 
+.counter button:active{
+transform:scale(.97);
+}
+
 .counter-value{
 font-size:36px;
 font-weight:800;
@@ -238,10 +256,197 @@ min-width:60px;
 text-align:center;
 }
 
+.reception-card{
+display:flex;
+flex-direction:column;
+gap:16px;
+}
+
+.reception-counter-list{
+display:grid;
+gap:12px;
+}
+
+.counter-row{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:16px;
+
+padding:16px;
+
+background:#fafafa;
+border:1px solid var(--border);
+border-radius:14px;
+}
+
+.counter-label{
+display:flex;
+flex-direction:column;
+gap:4px;
+}
+
+.counter-label span{
+font-size:18px;
+font-weight:800;
+}
+
+.counter-label small{
+font-size:13px;
+color:var(--sub);
+}
+
+.reception-total{
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+padding:16px;
+
+background:#111;
+color:white;
+border-radius:14px;
+}
+
+.reception-total span{
+font-size:14px;
+opacity:.75;
+}
+
+.reception-total strong{
+font-size:28px;
+}
+
 .money{
 font-size:52px;
 font-weight:900;
 text-align:center;
+}
+
+.money-display{
+padding:18px;
+margin-bottom:16px;
+
+background:#fafafa;
+border:1px solid var(--border);
+border-radius:14px;
+
+text-align:center;
+}
+
+.money-display .label{
+font-size:14px;
+color:var(--sub);
+margin-bottom:6px;
+}
+
+.money-display .amount{
+font-size:44px;
+font-weight:900;
+line-height:1.1;
+}
+
+.form-row{
+display:grid;
+gap:8px;
+margin-bottom:16px;
+}
+
+.form-row label{
+font-size:14px;
+font-weight:700;
+color:var(--sub);
+}
+
+.discount-card{
+padding:16px;
+margin-bottom:12px;
+
+background:#fafafa;
+border:1px solid var(--border);
+border-radius:14px;
+}
+
+.discount-card-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:12px;
+
+margin-bottom:12px;
+}
+
+.guest-type{
+padding:5px 10px;
+
+background:white;
+border:1px solid var(--border);
+border-radius:999px;
+
+font-size:12px;
+font-weight:700;
+color:var(--sub);
+}
+
+.discount-options{
+display:grid;
+grid-template-columns:
+repeat(3,1fr);
+gap:8px;
+}
+
+.discount-option button{
+width:100%;
+
+padding:14px 10px;
+
+border:1px solid var(--border);
+border-radius:12px;
+
+background:white;
+
+font-size:16px;
+font-weight:800;
+}
+
+.discount-option button.active{
+background:#111;
+color:white;
+border-color:#111;
+}
+
+.discount-current{
+margin-top:10px;
+font-size:13px;
+font-weight:700;
+color:var(--sub);
+}
+
+.checklist{
+display:grid;
+gap:10px;
+}
+
+.checklist label{
+display:flex;
+align-items:center;
+gap:12px;
+
+padding:16px;
+
+background:#fafafa;
+border:1px solid var(--border);
+border-radius:14px;
+
+font-size:16px;
+font-weight:700;
+}
+
+.checklist input[type="checkbox"]{
+width:22px;
+height:22px;
+flex:0 0 auto;
+accent-color:var(--primary);
 }
 
 .history-item{
@@ -272,8 +477,38 @@ flex:1;
 grid-template-columns:1fr;
 }
 
+.stats-grid{
+grid-template-columns:1fr;
+}
+
+.counter-row{
+align-items:stretch;
+flex-direction:column;
+}
+
+.counter{
+justify-content:space-between;
+}
+
+.counter button{
+width:58px;
+height:58px;
+}
+
+.counter-value{
+min-width:80px;
+}
+
+.discount-options{
+grid-template-columns:1fr;
+}
+
 .money{
 font-size:42px;
+}
+
+.money-display .amount{
+font-size:38px;
 }
 
 }

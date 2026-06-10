@@ -389,6 +389,61 @@ function renderEditStartCash() {
     };
 }
 
+function renderEditDrinkTickets() {
+
+  screen.innerHTML = `
+
+  <div class="card">
+
+    <div class="card-title">
+      ドリチケ枚数を編集
+    </div>
+
+    <div class="row">
+      <label>
+        ドリンクチケット残数
+      </label>
+
+      <input
+        id="editTicketCount"
+        type="number"
+        min="0"
+        value="${state.drinkTickets}"
+      >
+    </div>
+
+    <button
+      class="btn btn-primary btn-large"
+      id="saveDrinkTicketsBtn"
+    >
+      保存
+    </button>
+
+  </div>
+  `;
+
+  document
+    .getElementById(
+      "saveDrinkTicketsBtn"
+    )
+    .onclick = () => {
+
+      state.drinkTickets =
+        Number(
+          document
+            .getElementById(
+              "editTicketCount"
+            )
+            .value ||
+            0
+        );
+
+      saveState();
+
+      navigate(renderHome);
+    };
+}
+
 function renderHome() {
 
   const last =
@@ -453,6 +508,13 @@ function renderHome() {
       </div>
 
     </div>
+
+    <button
+      class="btn btn-secondary"
+      id="editDrinkTicketsBtn"
+    >
+      ドリチケ枚数を編集
+    </button>
 
   </div>
 
@@ -612,6 +674,17 @@ function renderHome() {
 
   document
     .getElementById(
+      "editDrinkTicketsBtn"
+    )
+    .addEventListener(
+      "click",
+      () => navigate(
+        renderEditDrinkTickets
+      )
+    );
+
+  document
+    .getElementById(
       "clearEventBtn"
     )
     .addEventListener(
@@ -624,72 +697,87 @@ function renderReceptionInput() {
 
   screen.innerHTML = `
 
-  <div class="card">
+  <div class="card reception-card">
 
     <div class="card-title">
       新規受付
     </div>
 
-    <div class="row">
+    <div class="reception-counter-list">
 
-      <span>一般</span>
+      <div class="counter-row">
 
-      <div class="counter">
-
-        <button
-          class="counter-btn"
-          id="generalMinus"
-        >
-          −
-        </button>
-
-        <div
-          class="counter-value"
-          id="generalCount"
-        >
-          0
+        <div class="counter-label">
+          <span>一般</span>
+          <small>通常来場者</small>
         </div>
 
-        <button
-          class="counter-btn"
-          id="generalPlus"
-        >
-          +
-        </button>
+        <div class="counter">
+
+          <button
+            class="counter-btn"
+            id="generalMinus"
+          >
+            −
+          </button>
+
+          <div
+            class="counter-value"
+            id="generalCount"
+          >
+            0
+          </div>
+
+          <button
+            class="counter-btn"
+            id="generalPlus"
+          >
+            +
+          </button>
+
+        </div>
+
+      </div>
+
+      <div class="counter-row">
+
+        <div class="counter-label">
+          <span>TMP</span>
+          <small>関係者・招待</small>
+        </div>
+
+        <div class="counter">
+
+          <button
+            class="counter-btn"
+            id="tmpMinus"
+          >
+            −
+          </button>
+
+          <div
+            class="counter-value"
+            id="tmpCount"
+          >
+            0
+          </div>
+
+          <button
+            class="counter-btn"
+            id="tmpPlus"
+          >
+            +
+          </button>
+
+        </div>
 
       </div>
 
     </div>
 
-    <div class="row">
-
-      <span>TMP</span>
-
-      <div class="counter">
-
-        <button
-          class="counter-btn"
-          id="tmpMinus"
-        >
-          −
-        </button>
-
-        <div
-          class="counter-value"
-          id="tmpCount"
-        >
-          0
-        </div>
-
-        <button
-          class="counter-btn"
-          id="tmpPlus"
-        >
-          +
-        </button>
-
-      </div>
-
+    <div class="reception-total">
+      <span>合計</span>
+      <strong id="receptionTotalCount">0名</strong>
     </div>
 
     <button
@@ -714,6 +802,11 @@ function renderReceptionInput() {
     document.getElementById(
       "tmpCount"
     ).textContent = tmp;
+
+    document.getElementById(
+      "receptionTotalCount"
+    ).textContent =
+      `${general + tmp}名`;
   };
 
   refresh();
@@ -831,24 +924,30 @@ function renderDiscountScreen() {
 
       html += `
 
-      <div
-        class="discount-card"
-      >
+      <div class="discount-card">
 
-        <strong>
+        <div class="discount-card-header">
 
-          来場者 ${
-            index + 1
-          }
+          <strong>
 
-          (${
-            guest.type ===
-            "general"
-              ? "一般"
-              : "TMP"
-          })
+            来場者 ${
+              index + 1
+            }
 
-        </strong>
+          </strong>
+
+          <span class="guest-type">
+
+            ${
+              guest.type ===
+              "general"
+                ? "一般"
+                : "TMP"
+            }
+
+          </span>
+
+        </div>
 
         <div
           class="discount-options"
@@ -859,6 +958,7 @@ function renderDiscountScreen() {
           >
 
             <button
+              class="${guest.discount === 0 ? "active" : ""}"
               onclick="
               setDiscount(
               ${index},
@@ -877,6 +977,7 @@ function renderDiscountScreen() {
           >
 
             <button
+              class="${guest.discount === 500 ? "active" : ""}"
               onclick="
               setDiscount(
               ${index},
@@ -895,6 +996,7 @@ function renderDiscountScreen() {
           >
 
             <button
+              class="${guest.discount === 1000 ? "active" : ""}"
               onclick="
               setDiscount(
               ${index},
@@ -910,11 +1012,7 @@ function renderDiscountScreen() {
 
         </div>
 
-        <div
-          style="
-          margin-top:10px;
-          "
-        >
+        <div class="discount-current">
 
           現在:
           ¥${guest.discount}
@@ -994,7 +1092,7 @@ function renderPaymentScreen() {
 
   screen.innerHTML = `
 
-  <div class="card">
+  <div class="card payment-card">
 
     <div class="card-title">
       お支払い金額
@@ -1014,7 +1112,7 @@ function renderPaymentScreen() {
 
     </div>
 
-    <div class="row">
+    <div class="form-row">
 
       <label>
 
@@ -1090,7 +1188,7 @@ function renderChecklist() {
 
   screen.innerHTML = `
 
-  <div class="card">
+  <div class="card checklist-card">
 
     <div class="card-title">
       受付確認
@@ -1121,7 +1219,7 @@ function renderChecklist() {
           id="checkTicket"
         >
 
-        ドリンクチケットを渡した
+        <span>ドリンクチケットを渡した</span>
 
       </label>
 
@@ -1132,7 +1230,7 @@ function renderChecklist() {
           id="checkMoney"
         >
 
-        お金を受け取った
+        <span>お金を受け取った</span>
 
       </label>
 
@@ -1143,7 +1241,7 @@ function renderChecklist() {
           id="checkChange"
         >
 
-        お釣りを渡した
+        <span>お釣りを渡した</span>
 
       </label>
 
