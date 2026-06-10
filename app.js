@@ -2044,6 +2044,19 @@ function renderResult() {
   ` : ""}
 </div>
 
+  <div class="card" style="text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #111 0%, #333 100%); color: white; border-radius: 20px;">
+    <div style="font-size: 14px; font-weight: 700; opacity: 0.8; margin-bottom: 16px;">
+      精算額
+    </div>
+    <div style="font-size: 64px; font-weight: 900; margin-bottom: 8px; line-height: 1;">
+      ¥${formatMoney(drinkTicketAmount + BOX_FEE)}
+    </div>
+    <div style="font-size: 13px; opacity: 0.8; line-height: 1.6;">
+      <div>1D(ドリチケ)分：¥${formatMoney(drinkTicketAmount)}</div>
+      <div style="margin-top: 8px;">箱代：¥10,000</div>
+    </div>
+  </div>
+
   <div class="card">
   <div class="stat">
 
