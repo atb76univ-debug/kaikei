@@ -642,6 +642,8 @@ function renderHome() {
 
   <br><br>
   <br><br>
+  <br><br>
+  <br><br>
 
   <div class="card drink-ticket-card">
 
