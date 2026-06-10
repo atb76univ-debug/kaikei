@@ -260,11 +260,18 @@ function renderSetup() {
     );
 }
 
-function renderCashInputs() {
+function renderCashInputs(breakdown = {}) {
 
   return CASH_DENOMINATIONS
     .map(
-      value => `
+      value => {
+
+        const count =
+          Number(
+            breakdown[value] || 0
+          );
+
+        return `
       <div class="row">
 
         <label>
@@ -274,17 +281,18 @@ function renderCashInputs() {
         <input
           type="number"
           min="0"
-          value="0"
+          value="${count}"
           data-cash="${value}"
         >
 
       </div>
-    `
+    `;
+      }
     )
     .join("");
 }
 
-function startEvent() {
+function readCashInputState() {
 
   let total = 0;
   const startCashBreakdown = {};
@@ -307,9 +315,20 @@ function startEvent() {
       startCashBreakdown[value] = count;
     });
 
-  state.startCash = total;
+  return {
+    total,
+    startCashBreakdown
+  };
+}
+
+function startEvent() {
+
+  const cashState =
+    readCashInputState();
+
+  state.startCash = cashState.total;
   state.startCashBreakdown =
-    startCashBreakdown;
+    cashState.startCashBreakdown;
 
   state.drinkTickets =
     Number(
@@ -323,6 +342,51 @@ function startEvent() {
   saveState();
 
   navigate(renderHome);
+}
+
+function renderEditStartCash() {
+
+  screen.innerHTML = `
+
+  <div class="card">
+
+    <div class="card-title">
+      初期金庫額を編集
+    </div>
+
+    ${renderCashInputs(
+      state.startCashBreakdown
+    )}
+
+    <button
+      class="btn btn-primary btn-large"
+      id="saveStartCashBtn"
+    >
+      保存
+    </button>
+
+  </div>
+  `;
+
+  document
+    .getElementById(
+      "saveStartCashBtn"
+    )
+    .onclick = () => {
+
+      const cashState =
+        readCashInputState();
+
+      state.startCash =
+        cashState.total;
+
+      state.startCashBreakdown =
+        cashState.startCashBreakdown;
+
+      saveState();
+
+      navigate(renderHome);
+    };
 }
 
 function renderHome() {
@@ -456,6 +520,15 @@ function renderHome() {
       state.startCashBreakdown
     )}
 
+    <br>
+
+    <button
+      class="btn btn-secondary"
+      id="editStartCashBtn"
+    >
+      初期金庫額を編集
+    </button>
+
   </div>
 
   <button
@@ -481,6 +554,15 @@ function renderHome() {
     id="resultBtn"
   >
     リザルト
+  </button>
+
+  <br><br>
+
+  <button
+    class="btn btn-danger btn-large"
+    id="clearEventBtn"
+  >
+    イベントデータを一括削除
   </button>
   `;
 
@@ -515,6 +597,26 @@ function renderHome() {
       () => navigate(
         renderResult
       )
+    );
+
+  document
+    .getElementById(
+      "editStartCashBtn"
+    )
+    .addEventListener(
+      "click",
+      () => navigate(
+        renderEditStartCash
+      )
+    );
+
+  document
+    .getElementById(
+      "clearEventBtn"
+    )
+    .addEventListener(
+      "click",
+      clearEventData
     );
 }
 
