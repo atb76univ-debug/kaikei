@@ -690,7 +690,7 @@ function renderHome() {
     class="btn btn-secondary btn-large"
     id="resultBtn"
   >
-    リザルト
+    リザルト(精算画面へ)
   </button>
 
   <br><br>
