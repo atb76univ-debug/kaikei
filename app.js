@@ -863,7 +863,7 @@ function renderReceptionInput() {
 
     <div id="tmpNamesContainer" style="display:none; margin-top:16px; padding-top:16px; border-top:1px solid var(--border);">
       <div class="section-label">
-        TMP来場者名簿
+        TMPメンバーは名前を記録
       </div>
       <div id="tmpNamesList" style="display:grid; gap:8px; margin-bottom:8px;">
       </div>
@@ -1017,7 +1017,7 @@ function renderReceptionInput() {
         
         if (emptyNames.length > 0) {
           alert(
-            "TMP来場者の名前を全て入力してください"
+            "TMPメンバーの名前を全て入力してください"
           );
           return;
         }
@@ -1721,7 +1721,7 @@ function renderHistory() {
           ${entry.tmp > 0 ? `
             <div class="discount-count-block">
               <div class="section-label">
-                TMP来場者名簿
+                TMPメンバー受付済
               </div>
               <div style="background:#fafafa; padding:12px; border-radius:12px; border:1px solid var(--border);">
                 ${(entry.guests || [])
