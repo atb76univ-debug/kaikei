@@ -2084,7 +2084,7 @@ function renderResult() {
   ` : ""}
 </div>
 
-  <div class="card" style="text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #111 0%, #333 100%); color: white; border-radius: 20px;">
+  <div class="card" style="text-align: center; padding: 40px 20px; background: linear-gradient(135deg, blue 0%, #000 100%); color: white; border-radius: 20px;">
     <div style="font-size: 14px; font-weight: 700; opacity: 0.8; margin-bottom: 16px;">
       精算額
     </div>
