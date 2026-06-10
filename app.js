@@ -1553,7 +1553,8 @@ function completeReception() {
 }
 
 function renderSuccessScreen() {
-
+  
+  backBtn.classList.add('hidden');
   const latest =
     state.receptionHistory[0];
 
