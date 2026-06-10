@@ -1645,10 +1645,10 @@ function renderHistory() {
         btn
         btn-danger
         "
-        id="clearEventBtn"
+        id="clearReceptionHistoryBtn"
       >
 
-        イベントデータを一括削除
+        受付履歴を一括削除
 
       </button>
 
@@ -1777,6 +1777,17 @@ function renderHistory() {
     clearEventBtn.onclick =
       clearEventData;
   }
+
+  const clearReceptionHistoryBtn =
+    document.getElementById(
+      "clearReceptionHistoryBtn"
+    );
+
+  if (clearReceptionHistoryBtn) {
+
+    clearReceptionHistoryBtn.onclick =
+      clearReceptionHistory;
+  }
 }
 
 function deleteHistory(id) {
@@ -1827,6 +1838,35 @@ function deleteHistory(id) {
         x =>
           x.id !== id
       );
+
+  saveState();
+
+  renderHistory();
+}
+function clearReceptionHistory() {
+
+  if (
+    !confirm(
+      "受付履歴をすべて削除しますか？"
+    )
+  ) {
+    return;
+  }
+
+  const totalPeople =
+    state.totals.general +
+    state.totals.tmp;
+
+  state.drinkTickets += totalPeople;
+
+  state.receptionHistory = [];
+
+  state.totals = {
+    general: 0,
+    tmp: 0,
+    grossEntrance: 0,
+    totalDiscount: 0
+  };
 
   saveState();
 
@@ -2348,7 +2388,7 @@ function calculateCashCheck() {
       );
 
   const diff =
-    actualCash - theoreticalCash - drinkTicketAmount - 10000;
+    actualCash - theoreticalCash + drinkTicketAmount + 10000;
 
   alert(
     `実金庫額: ¥${formatMoney(actualCash)}\n` +
