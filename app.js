@@ -867,9 +867,7 @@ function renderReceptionInput() {
       </div>
       <div id="tmpNamesList" style="display:grid; gap:8px; margin-bottom:8px;">
       </div>
-      <button id="addTmpNameBtn" class="btn btn-secondary" style="margin-top:8px; padding:12px;">
-        ＋ 名前を追加
-      </button>
+      
     </div>
 
     <button
