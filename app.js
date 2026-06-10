@@ -615,6 +615,34 @@ function renderHome() {
 
   </div>
 
+  <button
+    class="btn btn-primary btn-large"
+    id="newReceptionBtn"
+  >
+    新規受付
+  </button>
+
+  <br><br>
+
+  <button
+    class="btn btn-secondary btn-large"
+    id="historyBtn"
+  >
+    履歴
+  </button>
+
+  <br><br>
+
+  <button
+    class="btn btn-secondary btn-large"
+    id="resultBtn"
+  >
+    リザルト(精算画面へ)
+  </button>
+
+  <br><br>
+  <br><br>
+
   <div class="card drink-ticket-card">
 
     <div class="card-title">
@@ -668,30 +696,6 @@ function renderHome() {
 
   </div>
 
-  <button
-    class="btn btn-primary btn-large"
-    id="newReceptionBtn"
-  >
-    新規受付
-  </button>
-
-  <br><br>
-
-  <button
-    class="btn btn-secondary btn-large"
-    id="historyBtn"
-  >
-    履歴
-  </button>
-
-  <br><br>
-
-  <button
-    class="btn btn-secondary btn-large"
-    id="resultBtn"
-  >
-    リザルト(精算画面へ)
-  </button>
 
   <br><br>
 
@@ -855,6 +859,17 @@ function renderReceptionInput() {
       <strong id="receptionTotalCount">0名</strong>
     </div>
 
+    <div id="tmpNamesContainer" style="display:none; margin-top:16px; padding-top:16px; border-top:1px solid var(--border);">
+      <div class="section-label">
+        TMP来場者名簿
+      </div>
+      <div id="tmpNamesList" style="display:grid; gap:8px; margin-bottom:8px;">
+      </div>
+      <button id="addTmpNameBtn" class="btn btn-secondary" style="margin-top:8px; padding:12px;">
+        ＋ 名前を追加
+      </button>
+    </div>
+
     <button
       class="btn btn-primary btn-large"
       id="goDiscount"
@@ -867,6 +882,7 @@ function renderReceptionInput() {
 
   let general = 0;
   let tmp = 0;
+  let tmpNames = [];
 
   const refresh = () => {
 
@@ -882,6 +898,63 @@ function renderReceptionInput() {
       "receptionTotalCount"
     ).textContent =
       `${general + tmp}名`;
+
+    // TMP名入力欄の表示制御
+    const container = document.getElementById(
+      "tmpNamesContainer"
+    );
+    if (tmp > 0) {
+      container.style.display = "block";
+      updateTmpNamesList();
+    } else {
+      container.style.display = "none";
+      tmpNames = [];
+    }
+  };
+
+  const updateTmpNamesList = () => {
+    const listContainer = document.getElementById(
+      "tmpNamesList"
+    );
+    listContainer.innerHTML = tmpNames
+      .map((name, index) => `
+        <div style="display:flex; gap:8px; align-items:center;">
+          <input 
+            type="text" 
+            value="${name}" 
+            placeholder="名前を入力"
+            data-index="${index}"
+            class="tmp-name-input"
+            style="flex:1; padding:10px; border:1px solid var(--border); border-radius:8px; font-size:14px;"
+          >
+          <button 
+            class="tmp-name-delete"
+            data-index="${index}"
+            style="width:40px; height:40px; padding:0; border:1px solid var(--danger); background:white; color:var(--danger); border-radius:8px; font-weight:bold; cursor:pointer;"
+          >
+            削
+          </button>
+        </div>
+      `)
+      .join("");
+
+    // 名前入力フィールドの変更イベント
+    document.querySelectorAll(".tmp-name-input").forEach(input => {
+      input.addEventListener("change", (e) => {
+        const index = parseInt(e.target.dataset.index);
+        tmpNames[index] = e.target.value;
+      });
+    });
+
+    // 削除ボタンのイベント
+    document.querySelectorAll(".tmp-name-delete").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const index = parseInt(e.target.dataset.index);
+        tmpNames.splice(index, 1);
+        tmp--;
+        refresh();
+      });
+    });
   };
 
   refresh();
@@ -906,6 +979,7 @@ function renderReceptionInput() {
     .getElementById("tmpPlus")
     .onclick = () => {
       tmp++;
+      tmpNames.push("");
       refresh();
     };
 
@@ -914,6 +988,7 @@ function renderReceptionInput() {
     .onclick = () => {
       if (tmp > 0) {
         tmp--;
+        tmpNames.pop();
         refresh();
       }
     };
@@ -932,6 +1007,20 @@ function renderReceptionInput() {
         );
 
         return;
+      }
+
+      // TMP客の名前入力チェック
+      if (tmp > 0) {
+        const emptyNames = tmpNames.filter(
+          name => !name || name.trim() === ""
+        );
+        
+        if (emptyNames.length > 0) {
+          alert(
+            "TMP来場者の名前を全て入力してください"
+          );
+          return;
+        }
       }
 
       state.currentReception = {
@@ -969,7 +1058,9 @@ function renderReceptionInput() {
 
           type: "tmp",
 
-          discount: 0
+          discount: 0,
+
+          name: tmpNames[i] || ""
 
         });
       }
@@ -1005,8 +1096,10 @@ function renderDiscountScreen() {
 
           <strong>
 
-            来場者 ${
-              index + 1
+            ${
+              guest.type === "tmp"
+                ? guest.name || "TMP来場者"
+                : `来場者 ${index + 1}`
             }
 
           </strong>
@@ -1625,6 +1718,24 @@ function renderHistory() {
             )}
           </div>
 
+          ${entry.tmp > 0 ? `
+            <div class="discount-count-block">
+              <div class="section-label">
+                TMP来場者名簿
+              </div>
+              <div style="background:#fafafa; padding:12px; border-radius:12px; border:1px solid var(--border);">
+                ${(entry.guests || [])
+                  .filter(g => g.type === "tmp")
+                  .map(g => `
+                    <div style="padding:8px 0; border-bottom:1px solid var(--border);">
+                      <span style="font-weight:600;">${g.name || "名前未記入"}</span>
+                    </div>
+                  `)
+                  .join("")}
+              </div>
+            </div>
+          ` : ""}
+
           <br>
 
           <button
@@ -1747,6 +1858,14 @@ function renderResult() {
 
     state.totals.tmp;
 
+  // TMP来場者一覧を集計
+  const allTmpGuests = state.receptionHistory
+    .flatMap(r => 
+      (r.guests || [])
+        .filter(g => g.type === "tmp")
+        .map(g => ({ name: g.name, timestamp: r.timestamp }))
+    );
+
   const grossEntrance =
     state.receptionHistory
       .reduce(
@@ -1862,30 +1981,18 @@ function renderResult() {
       </div>
 
     </div>
-
-  </div>
-
-  <div class="card">
-
-    <div class="row">
-
-      <span>
-        徴収額
-      </span>
-
-      <strong>
-
-        ¥${formatMoney(
-          entranceIncome
-        )}
-
-      </strong>
-
+    <div class="discount-count-block">
+      <div class="section-label">
+        割引入場人数
+      </div>
+      ${renderDiscountCounts(
+        discountCounts
+      )}
     </div>
 
-    <div class="row">
+    <div class="discount-count-block row">
 
-      <span>
+      <span class="section-label">
         総割引額
       </span>
 
@@ -1899,22 +2006,71 @@ function renderResult() {
 
     </div>
 
+  </div>
+
+ <div class="card">
+  ${allTmpGuests.length > 0 ? `
     <div class="discount-count-block">
       <div class="section-label">
-        割引入場人数
+        受付したTMPメンバー（${allTmpGuests.length}名）
       </div>
-      ${renderDiscountCounts(
-        discountCounts
-      )}
+
+      <div style="
+        background:#fafafa;
+        padding:12px;
+        border-radius:12px;
+        border:1px solid var(--border);
+        max-height:300px;
+        overflow-y:auto;
+      ">
+        ${allTmpGuests
+          .map((guest, idx) => `
+            <div style="
+              padding:10px 0;
+              border-bottom:1px solid var(--border);
+              display:flex;
+              justify-content:space-between;
+              align-items:center;
+            ">
+              <span style="font-weight:600;">${guest.name}</span>
+              <span style="font-size:12px; color:var(--sub);">
+                ${guest.timestamp}
+              </span>
+            </div>
+          `)
+          .join("")}
+      </div>
     </div>
+  ` : ""}
+</div>
+
+  <div class="card">
+  <div class="stat">
 
     <div class="row">
 
       <span>
-        ドリチケ預かり分
+        入場料+1Dの総額
       </span>
 
       <strong>
+
+        ¥${formatMoney(
+          entranceIncome
+        )}
+
+      </strong>
+
+    </div>
+
+
+    <div class="row">
+
+      <span class="highlight-blue">
+        1D(ドリチケ)分
+      </span>
+
+      <strong class="highlight-blue">
 
         ¥${formatMoney(
           drinkTicketAmount
@@ -1942,11 +2098,25 @@ function renderResult() {
 
     <div class="row">
 
-      <span>
+      <span class="highlight-blue">
+        箱代
+      </span>
+
+      <strong class="highlight-blue">
+
+        -¥10,000
+
+      </strong>
+
+    </div>
+
+    <div class="row">
+
+      <span class="highlight-red">
         利益
       </span>
 
-      <strong>
+      <strong class="highlight-red">
 
         ¥${formatMoney(
           profit
@@ -1955,15 +2125,17 @@ function renderResult() {
       </strong>
 
     </div>
+    </div>
 
   </div>
+
 
   <div class="card">
 
     <div class="row">
 
       <span>
-        理論金庫額
+        受付終了時・精算前の金庫額
       </span>
 
       <strong>
@@ -1973,6 +2145,25 @@ function renderResult() {
         )}
         (${formatSignedMoney(
           cashIncrease
+        )})
+
+      </strong>
+
+    </div>
+
+<div class="row">
+
+      <span>
+        精算後の金庫額
+      </span>
+
+      <strong>
+
+        ¥${formatMoney(
+          theoreticalCash - drinkTicketAmount - 10000
+        )}
+        (${formatSignedMoney(
+          cashIncrease - drinkTicketAmount - 10000
         )})
 
       </strong>
@@ -2127,6 +2318,13 @@ function calculateCashCheck() {
       0
     );
 
+    const people =
+    state.totals.general +
+    state.totals.tmp;
+
+  const drinkTicketAmount =
+    people * DRINK_FEE;
+
   const theoreticalCash =
     state.startCash +
     state.receptionHistory
@@ -2137,11 +2335,11 @@ function calculateCashCheck() {
       );
 
   const diff =
-    actualCash - theoreticalCash;
+    actualCash - theoreticalCash - drinkTicketAmount - 10000;
 
   alert(
     `実金庫額: ¥${formatMoney(actualCash)}\n` +
-    `理論金庫額: ¥${formatMoney(theoreticalCash)}\n` +
+    `理論金庫額: ¥${formatMoney(theoreticalCash - drinkTicketAmount - 10000)}\n` +
     `差額: ¥${formatMoney(diff)}`
   );
 }
